@@ -101,7 +101,7 @@
             font-size: 18px;
             margin-top: 20px;
         }
-        /* Responsive styling */
+
         @media (max-width: 768px) {
             nav a {
                 display: block;
@@ -121,9 +121,10 @@
         <a onclick="showTab('about')">About</a>
         <a onclick="showTab('entry')">Entry</a>
         <a onclick="showTab('voting')">Voting</a>
+        <a onclick="showTab('results')">Results</a>
     </nav>
 
-    <div id="about" class="tab-content">
+    <div id="about" class="tab-content active">
         <h2>About Unjani Miss Tzaneen</h2>
         <p>This pageant is about empowering women, raising awareness for mental health, and supporting charity initiatives.</p>
         <p>We aim to bring together strong, confident women who are ready to inspire and make a difference in their communities.</p>
@@ -172,7 +173,6 @@
             <label for="contestant">Select Contestant:</label>
             <select id="contestant" name="contestant" onchange="updateTotal()">
                 <option value="">-- Choose Contestant --</option>
-                <!-- Add contestants from 1 to 30 -->
                 <option value="1">Contestant 1</option>
                 <option value="2">Contestant 2</option>
                 <option value="3">Contestant 3</option>
@@ -183,40 +183,27 @@
                 <option value="8">Contestant 8</option>
                 <option value="9">Contestant 9</option>
                 <option value="10">Contestant 10</option>
-                <option value="11">Contestant 11</option>
-                <option value="12">Contestant 12</option>
-                <option value="13">Contestant 13</option>
-                <option value="14">Contestant 14</option>
-                <option value="15">Contestant 15</option>
-                <option value="16">Contestant 16</option>
-                <option value="17">Contestant 17</option>
-                <option value="18">Contestant 18</option>
-                <option value="19">Contestant 19</option>
-                <option value="20">Contestant 20</option>
-                <option value="21">Contestant 21</option>
-                <option value="22">Contestant 22</option>
-                <option value="23">Contestant 23</option>
-                <option value="24">Contestant 24</option>
-                <option value="25">Contestant 25</option>
-                <option value="26">Contestant 26</option>
-                <option value="27">Contestant 27</option>
-                <option value="28">Contestant 28</option>
-                <option value="29">Contestant 29</option>
-                <option value="30">Contestant 30</option>
             </select>
 
             <div id="vote-options">
                 <h3>Choose your vote package:</h3>
                 <form id="vote-form">
-                    <button type="button" onclick="makePayment(10)">1 Vote (R10)</button>
-                    <button type="button" onclick="makePayment(60)">5 Votes (R60)</button> <!-- Correct R60 Link here -->
-                    <button type="button" onclick="makePayment(100)">10 Votes (R100)</button>
-                    <button type="button" onclick="makePayment(500)">100 Votes (R500)</button> <!-- Bonus Vote link -->
+                    <button type="button" onclick="makePayment(10, '1')">1 Vote (R10)</button>
+                    <button type="button" onclick="makePayment(60, '1')">5 Votes (R60)</button>
+                    <button type="button" onclick="makePayment(100, '1')">10 Votes (R100)</button>
+                    <button type="button" onclick="makePayment(500, '1')">100 Votes (R500)</button>
                 </form>
             </div>
 
             <p id="total">Total: R0</p>
         </div>
+    </div>
+
+    <div id="results" class="tab-content">
+        <h2>Voting Results</h2>
+        <ul id="results-list">
+            <!-- Results will be displayed here dynamically -->
+        </ul>
     </div>
 
     <div class="stay-tuned">
@@ -228,6 +215,9 @@
     </footer>
 
     <script>
+        // Store vote counts for each contestant
+        let votes = {};
+
         function showTab(tabName) {
             var tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
@@ -237,38 +227,56 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        function makePayment(votes) {
-            let paymentLink = "";
+        function makePayment(votesCount, contestant) {
+            // Update the vote count for the selected contestant
+            if (!votes[contestant]) {
+                votes[contestant] = 0;
+            }
+            votes[contestant] += votesCount;
 
-            if (votes === 10) {
+            // Open the payment link
+            let paymentLink = "";
+            if (votesCount === 10) {
                 paymentLink = "https://pay.yoco.com/r/2BK1V0";
-            } else if (votes === 60) {
-                paymentLink = "https://pay.yoco.com/r/4qeBgj"; // Correct R60 link here
-            } else if (votes === 100) {
+            } else if (votesCount === 60) {
+                paymentLink = "https://pay.yoco.com/r/4qeBgj";
+            } else if (votesCount === 100) {
                 paymentLink = "https://pay.yoco.com/r/7l16OO";
-            } else if (votes === 500) {
+            } else if (votesCount === 500) {
                 paymentLink = "https://pay.yoco.com/r/78YqOG";
             }
 
             if (paymentLink) {
                 window.open(paymentLink, "_blank");
             }
+
+            // Update the results
+            updateResults();
         }
 
         function updateTotal() {
-            var voteOptions = document.getElementById("vote-options");
             var selectedContestant = document.getElementById("contestant").value;
             var totalText = document.getElementById("total");
 
             if (selectedContestant) {
-                totalText.textContent = "Total: R0";
-                voteOptions.style.display = "block";
+                totalText.textContent = "Total: R0"; // Add dynamic total amount if needed
             } else {
                 totalText.textContent = "Please select a contestant to vote for.";
-                voteOptions.style.display = "none";
+            }
+        }
+
+        function updateResults() {
+            // Get the results list element
+            var resultsList = document.getElementById("results-list");
+            resultsList.innerHTML = '';
+
+            // Loop through each contestant and display their vote count
+            for (var contestant in votes) {
+                var li = document.createElement("li");
+                li.textContent = "Contestant " + contestant + ": " + votes[contestant] + " votes";
+                resultsList.appendChild(li);
             }
         }
     </script>
-
 </body>
 </html>
