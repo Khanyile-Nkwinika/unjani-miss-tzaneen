@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unjani Miss Tzaneen</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="unjani miss tzaneen logo.png" type="image/png">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,6 +22,11 @@
             padding: 20px;
             text-align: center;
         }
+
+            header img {
+                max-width: 100px; /* Adjust the size of the logo */
+                height: auto;
+            }
 
             header h1 {
                 margin: 0;
@@ -113,6 +122,8 @@
 <body>
 
     <header>
+        <!-- Updated logo path -->
+        <img src="unjani miss tzaneen logo.png" alt="Pageant Logo" style="max-width: 100px; height: auto;">
         <h1>Welcome to Unjani Miss Tzaneen</h1>
         <p>A pageant dedicated to woman empowerment, mental health awareness, and charity</p>
     </header>
@@ -160,9 +171,9 @@
         </form>
 
         <div class="pay-section">
-            <h3>Entry Fee: R350</h3>
-            <form action="https://pay.yoco.com/r/7XOGlG" method="get" target="_blank">
-                <input type="submit" value="Pay Entry Fee (R350)" class="form-group">
+            <h3>Entry Fee: R150</h3>
+            <form action="https://pay.yoco.com/r/4kgEQr" method="get" target="_blank">
+                <input type="submit" value="Pay Entry Fee (R150)" class="form-group">
             </form>
         </div>
     </div>
@@ -227,56 +238,28 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        function makePayment(votesCount, contestant) {
-            // Update the vote count for the selected contestant
-            if (!votes[contestant]) {
-                votes[contestant] = 0;
-            }
-            votes[contestant] += votesCount;
-
-            // Open the payment link
-            let paymentLink = "";
-            if (votesCount === 10) {
-                paymentLink = "https://pay.yoco.com/r/2BK1V0";
-            } else if (votesCount === 60) {
-                paymentLink = "https://pay.yoco.com/r/4qeBgj";
-            } else if (votesCount === 100) {
-                paymentLink = "https://pay.yoco.com/r/7l16OO";
-            } else if (votesCount === 500) {
-                paymentLink = "https://pay.yoco.com/r/78YqOG";
-            }
-
-            if (paymentLink) {
-                window.open(paymentLink, "_blank");
-            }
-
-            // Update the results
-            updateResults();
-        }
-
         function updateTotal() {
-            var selectedContestant = document.getElementById("contestant").value;
-            var totalText = document.getElementById("total");
-
+            var selectedContestant = document.getElementById('contestant').value;
             if (selectedContestant) {
-                totalText.textContent = "Total: R0"; // Add dynamic total amount if needed
+                if (!votes[selectedContestant]) {
+                    votes[selectedContestant] = 0;
+                }
+                document.getElementById('vote-options').style.display = 'block';
             } else {
-                totalText.textContent = "Please select a contestant to vote for.";
+                document.getElementById('vote-options').style.display = 'none';
             }
         }
 
-        function updateResults() {
-            // Get the results list element
-            var resultsList = document.getElementById("results-list");
-            resultsList.innerHTML = '';
+        function makePayment(amount, contestantId) {
+            // Add vote amount to the selected contestant's total
+            votes[contestantId] = (votes[contestantId] || 0) + amount;
 
-            // Loop through each contestant and display their vote count
-            for (var contestant in votes) {
-                var li = document.createElement("li");
-                li.textContent = "Contestant " + contestant + ": " + votes[contestant] + " votes";
-                resultsList.appendChild(li);
-            }
+            document.getElementById('total').textContent = 'Total: R' + votes[contestantId];
+
+            // Redirect to the payment gateway (Simulated with a link)
+            window.location.href = 'https://pay.yoco.com/r/4kgEQr'; // Replace with actual payment link
         }
     </script>
+
 </body>
 </html>
